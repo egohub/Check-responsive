@@ -1,0 +1,606 @@
+@@ -0,0 +1,605 @@
+///// Variables
+/// Colors
+$color-base: powderblue;
+$color-base-lightest: adjust-color($color-base, $lightness: + 15%);
+$color-base-lighter: adjust-color($color-base, $lightness: + 10%);
+$color-base-light: adjust-color($color-base, $lightness: + 5%);
+$color-base-dark: adjust-color($color-base, $lightness: - 5%);
+$color-base-darker: adjust-color($color-base, $lightness: - 10%);
+$color-base-darkest: adjust-color($color-base, $lightness: - 15%);
+$color-complementary: complement($color-base);
+/// Spacing
+$padding-base: .625rem;
+$margin-base: .625rem;
+$gutter-base: 1.25rem;
+/// Type
+$font-size-base: 16px;
+
+///// Mixins
+/// Helper 
+@mixin clearfix {
+	&:after {
+		content: '';
+		display: table;
+		clear: both;
+	}
+}
+
+/// Typography
+@mixin fontStyleHeading {
+	font-size: 1em;
+	font-weight: 400;
+}
+
+@mixin fontStyleSmall {
+	font-size: .675em;
+	text-transform: uppercase;
+}
+
+///// Base Styling
+*, *:before, *:after { box-sizing: border-box; }
+html {
+	overflow-x: hidden;
+	font-size: $font-size-base; 
+}
+body { font-family: 'Cabin', sans-serif;line-height: 1.333; }
+
+///// UI-Components
+/// Mixins
+@mixin customFocus {	
+	
+	&:focus {
+		outline: 0;
+		box-shadow: 0 0 10px $color-complementary;
+	}
+}
+
+/// Styling
+.ui-wrapper {
+	width: 240px;
+	margin: $margin-base*2;
+	@include clearfix;
+	overflow: hidden;
+	position: absolute;
+	top: 0;
+	z-index: 1000;
+}
+
+.ui-container {
+	@include clearfix;
+	opacity: 0;
+	transform: translateY(-1000px);
+	transition: opacity 150ms ease-in, 
+					transform 10ms linear 150ms;
+	
+	:checked ~ & {
+		opacity: 1;
+		transform: translateY(0);
+		transition: opacity 150ms ease-in;
+	}
+}
+
+/// UI-Block
+.ui-block {
+	width: 100%;
+	padding: 0 $padding-base;
+	border-top: 1px solid $color-base-lighter;
+	margin-bottom: $margin-base*2;
+	float: left;
+	
+	&__heading {
+		margin: $margin-base 0;
+		@include fontStyleHeading;
+		text-align: center;
+	}
+}
+
+.ui-input {
+	width: 100%;
+	float:left;
+	
+	&__label {
+		width: 100%;
+		display: inline-block;
+	}
+	
+	&--isHidden {
+		position: absolute;
+		top: -2000px;
+	}
+	
+	&--wrapsButton {
+		position: relative;
+		
+		.ui-input__input {
+			padding-right: 2.5em;
+		}
+		
+		.ui-input__button {
+			position: absolute;
+			bottom: .188rem;
+			
+			&--sticksLeft {
+				left: .188rem;
+			}
+			
+			&--sticksRight {
+				right: .188rem;
+			}
+		}
+	}
+	
+	&--wrapsTwoButtons {		
+		
+		.ui-input__input {
+			padding-left: 2.5em;
+			text-align: center;
+		}
+	}
+	
+	#choose-layout & {
+		width: 33.3%;
+	}
+	
+	#other & {
+		width: 50%;
+	}
+}
+
+/// UI-Label looks like Button and has Text 
+.ui-label {
+	
+	&--isButton {
+		text-align: center;
+		cursor: pointer;
+	}
+	
+	&__button {
+		margin-bottom: $margin-base/2;
+		display: inline-block;
+	}
+	
+	&__text {
+		width: 100%;
+		display: inline-block;
+		@include fontStyleSmall;
+	}
+	
+	&--isToggable {
+		
+		.ui-label__button {
+			position: relative;
+			margin-left: -12.5%;
+			
+			&:after {
+				content: '';
+				@extend %text-input-base;
+				width: 150% !important;
+				padding: 0;
+				display: block;
+				position: absolute;
+				z-index: -1;
+				top: - .188rem;
+				left: - .188rem;
+			}			
+		}
+		
+		:checked + & {
+			
+			.ui-label__button {
+				margin-left: 6.25%;
+			
+				&:after {
+					left: auto;
+					right: - .188rem;
+				}
+			}
+		}
+	}
+	
+	&--hasSettingsBackground {
+		margin-left: $margin-base;
+		text-align: left;
+			
+		.ui-label__button {
+			position: relative;
+			text-align: center;
+			
+			&:after {
+				content: '';
+				width: 100%;
+				height: 100%;
+				border-radius: 100%;
+				display: block;
+				background: $color-base-lightest;
+				position: absolute;
+				z-index: -2;
+				top: 0; left: 0;
+				transition: transform 150ms ease-in-out;
+			}
+		}
+		
+		.ui-label__text {
+			width: auto;
+		}
+		
+		:checked + & {
+			
+			.ui-label__button {
+				
+				&:after {
+					transform: scale(50);
+				}
+			}
+		}
+	}
+}
+
+///// Buttons
+/// Base
+%button-base {
+	width: 2rem;
+	height: 2rem;
+	padding: 0;
+	border: 0px solid $color-base-dark;
+	border-radius: 2rem;
+	background: $color-base;
+	color: $color-base-lightest;
+	line-height: 2rem;
+	text-shadow: 0 1px 1px $color-base-darkest;
+	
+	@include customFocus;
+	
+	&:hover, &:focus, :checked ~ label & {
+		color: white;
+		background: $color-base-darker;
+	}
+}
+
+.button {
+	@extend %button-base;
+}
+
+///// Inputs
+/// Base
+%text-input-base {
+	width: 100%;
+	height: 2.375rem;
+	padding: $padding-base/4 $padding-base;
+	border: 1px solid $color-base-lighter;
+	border-radius: 2rem;
+	background: white;
+	
+	@include customFocus;
+}
+
+input {
+	
+	&[type=text],
+	&[type=url] {
+		@extend %text-input-base;
+	}
+}
+
+///// Icons
+.fa-arrow-right {
+	transform: translateX(.063em);
+}
+
+///// Devices
+/// Layout
+
+.device-img {
+	@include clearfix;
+}
+
+.device-iframe {	
+	left: 50%;
+}
+
+.devices-container {  
+	//max-width: 960px;
+	width: 100vw;
+	height: 100vh;
+	padding-top: $padding-base*2;
+	margin: 0 auto; 
+	margin-top: $margin-base*10;
+	position: relative;
+	transform-origin: center 0;
+	//transform: scale(1.75);
+}
+
+.device {
+	@include clearfix;
+    position: absolute;
+	top: 0;
+	left: 50%;
+	transform: translate(-50%,0);
+    
+    &.device-iPhone {
+      
+      .layout-1 &, .layout--allDevices & {
+        transform: translate(264px,236px);
+      }
+      
+      .layout-2 &, .layout--onlyDesktop & {
+        display:none;
+      }
+      
+      .layout-3 &, .layout--onlyMobile & {
+        transform: translate(-151px,172px);
+      }
+      
+    }
+    
+    &.device-iPadMini  {
+      
+      .layout-1 & {
+        transform: translate(316px,211px);
+      }
+      
+      .layout-2 & {
+        display:none;
+      }
+      
+      .layout-3 & {
+        transform: translate(82px,158px);
+      }
+      
+    }
+    
+    &.device-iPad {
+      
+      .layout-1 & {
+        transform: translate(153px,173px);
+      }
+      
+      .layout-2 & {
+        display:none;
+      }
+      
+      .layout-3 & {
+        display: inline-block;
+        position: relative;
+        transform: translate(-50%,100px);
+      }
+      
+    } 
+    
+    &.device-MacPro {
+      
+      .layout-1 & {
+        transform: translate(-440px,180px);
+      }
+      
+      .layout-2 & {
+        display: inline-block; 
+		position:relative;
+        transform: translate(-100%,0);
+      }
+      
+      .layout-3 & {
+        display:none; 
+      }
+    }
+    
+    &.device-iMac {
+      
+      .layout-1 & {
+        position: relative;
+        display: inline-block;
+      }
+      
+      .layout-2 & {
+		  position:relative;
+		  display: inline-block;
+		  transform: translateX(-100%);	  
+      }
+      
+      .layout-3 & {
+        display:none; 
+      }
+      
+    }
+}
+
+.device-iframe {
+    position:absolute;
+    transform-origin:0 0;
+      
+      .device-iPhone & {
+        top:18px;
+  
+        .layout-1 &,
+        .layout-2 &,
+        .layout-3 & {
+            display:inline-block;
+            transform:scale(0.15625) translateX(-50%);
+        }
+        
+        &.isScaledTo960 {
+            width:960px; height:1689px;
+            transform:scale(0.052083) translateX(-50%);
+        }
+        
+      }
+      
+      .device-iPadMini & {
+        top:13px;
+        
+        .layout-1 &,
+        .layout-2 &,
+        .layout-3 &  {
+            display:inline-block;
+            transform:scale(0.10814318) translateX(-50%);
+            }
+        
+          &.isScaledTo960 {
+              width:960px; height:1253px;
+              transform:scale(0.0885416667) translateX(-50%);
+          }
+        
+        }
+      
+      .device-iPad & {
+        top:18px;
+        
+        .layout-1 &,
+        .layout-2 &,
+        .layout-3 &  {
+            display:inline-block;
+            transform:scale(0.13741927) translateX(-50%);
+            }
+        
+        &.isScaledTo960 {
+            width:960px; height:1244px;
+            transform:scale(0.1125) translateX(-50%);
+        }
+        
+        }
+      
+      .device-MacPro & {
+        top:8px;
+        
+        .layout-1 &,
+        .layout-2 &,
+        .layout-3 &  { 
+            display:inline-block;
+            transform:scale(0.17) translateX(-50%);
+            }
+        }
+      
+      .device-iMac & {
+        top:14px; left:14px;   
+        transform:scale(0.17343045);
+        }
+}
+
+/// Devices Default Theme
+// config
+$device-base-color: #474e5d;
+$device-case-color: #e6ebf0;
+$device-button-color: white;
+$device-gadget-color: #a5adbd;
+$device-shadow-color: transparentize(black, .9);
+
+.device {
+	
+	&__base {
+    	fill: $device-base-color;
+	}
+	
+	&__screen {
+    	fill: $device-base-color;
+	}
+	
+	&__case,
+	&__stand {
+    	fill: $device-case-color;
+	}
+	
+	&__drop-shadow,
+	&__case-shadow {
+    	fill: $device-shadow-color;
+	}
+	
+	&__cam,
+	&__speaker {
+    	fill: $device-gadget-color;
+	}
+	
+	&__homebutton,
+	&__logo {
+    	fill: $device-button-color;
+	}
+}
+
+///// Background
+.bg-iframe {
+	width: 100%; 
+	height: 100%;
+	position: absolute; 
+	top:0; 	
+	right:0; 
+	z-index:-1;
+	opacity:.5;
+	filter: blur(25px);
+	transition: opacity .2s ease;
+	pointer-events: none;
+}
+
+.invisible {
+	opacity: 0;
+}
+
+/// Welcome Message
+#welcome {
+	width: 600px;
+	height: 150px;
+	margin: auto;
+	top: 0;
+	bottom: -250px;
+	left: 0;
+	right: 0;
+	opacity: 1;
+	transform: translate(0,0);
+	transition: 
+		transform 450ms cubic-bezier(0.68,-.55,.265,1.55),
+		opacity 450ms cubic-bezier(0.68,-.55,.265,1.55);
+	
+	&.popOut {
+		opacity: 0;
+		transform: translate(0,-25px);		
+	}
+	
+	.ui-block {
+		border: 0;
+	}
+	
+	.ui-block__headline {
+		text-align: center;
+	}
+	
+	.ui-input__input {
+		text-align: center;
+	}
+	
+	.ui-input__button {
+		//display: none;
+	}
+	
+	.enter-url {
+		font-size: 20px;
+		
+	}
+	
+	~ .devices-wrapper {
+	}
+}
+
+.isBlurred {
+	filter: blur(15px);
+	transition: filter 600ms ease;
+}
+
+#settings {
+	opacity: 0;
+	transform: translateY(-200px);
+	transition: 
+		transform 300ms cubic-bezier(0.68,-.55,.265,1.55),
+		opacity 300ms cubic-bezier(0.68,-.55,.265,1.55);
+	
+	&.popIn {		
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+
+
+
+
+
+
+
+
